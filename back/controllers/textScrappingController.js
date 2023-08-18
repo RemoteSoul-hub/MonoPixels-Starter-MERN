@@ -1,26 +1,48 @@
-const {Client} = require("@googlemaps/google-maps-services-js");
-
-const client = new Client({});
+const axios = require('axios');
+const Place = require('../models/Place'); // Adjust the path as needed
 
 exports.textRequest = async (req, res) => {
-    try {
-        console.log("im within the try textsearch")
-        client.textSearch({
-            params: {
-              textSearch: req.body,
-              key: "AIzaSyDskfKGhahhb5vaq3ITotS5_7EXnPjOT10",
-            },
-            timeout: 1000, // milliseconds
-          })
-          .then((r) => {
-            console.log(r.data.results[0].textSearch);
-          })
-          .catch((e) => {
-            console.log(e.res.data.error_message);
-          });
-    } catch (error) {
-        console.error(err); // Log any error that occurs
-        res.status(500).json({ error: err.message });
-    }
+  try {
+    console.log("Starting text search request...");
 
+    const query = req.body.text;
+    const key = "AIzaSyDskfKGhahhb5vaq3ITotS5_7EXnPjOT10";
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${key}`;
+
+    console.log(`Fetching data from URL: ${url}`);
+
+    axios.get(url)
+      .then(async (response) => {
+        const places = response.data.results;
+
+        console.log(`Received ${places.length} places from Google Maps API.`);
+
+        // Iterate over the results and save each one
+        for (const place of places) {
+          console.log(`Saving place: ${place.name} (ID: ${place.place_id})`);
+
+          const newPlace = new Place({
+            name: place.name,
+            place_id: place.place_id
+          });
+
+          await newPlace.save();
+          console.log(`Saved place: ${place.name}`);
+        }
+
+        console.log("Sending results back to client.");
+        res.json(places); // Send results back to the client
+      })
+      .catch((error) => {
+        if (error.response && error.response.data && error.response.data.error_message) {
+          console.error(`Error fetching data from Google Maps API: ${error.response.data.error_message}`);
+        } else {
+          console.error(`Unexpected error:`, error);
+        }
+        res.status(500).json({ error: error.message || 'An unexpected error occurred' });
+      });
+  } catch (error) {
+    console.error(`Unexpected error: ${error}`);
+    res.status(500).json({ error: error.message });
+  }
 }
