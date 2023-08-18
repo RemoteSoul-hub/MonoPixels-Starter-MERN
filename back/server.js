@@ -35,7 +35,9 @@ db.on('disconnected', () => {
 
 // Routes
 const submitRoute = require('./routes/submit'); 
+const scrapperRoute = require('./routes/G_scrapper')
 app.use('/api', submitRoute); 
+app.use('/api', scrapperRoute);
 
 app.get('/', (req, res) => {
   res.send('MonoChat AI Backend is running');

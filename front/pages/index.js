@@ -2,7 +2,7 @@ export default function Home() {
     const submitForm = async (e) => {
       e.preventDefault();
       const text = e.target.text.value;
-      await fetch('http://localhost:3001/api/submit', {
+      await fetch('http://localhost:3001/api/scrapperRoute', {
         method: 'POST',
         body: JSON.stringify({ text }),
         headers: { 'Content-Type': 'application/json' },
