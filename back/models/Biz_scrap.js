@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const biz_scrap = new mongoose.Schema( {
-  website: String,
-  Email: String,
+  id: String,
+  biz_name: String,
 })
 
 module.exports = mongoose.model('G_result', biz_scrap);
