@@ -3,6 +3,6 @@ const textScrappingController = require('../controllers/textScrappingController'
 
 const router = express.Router();
 
-router.post('/scrapper', textScrappingController.textRequest);
+router.post('/scrapperRoute', textScrappingController.textRequest);
 
 module.exports = router;

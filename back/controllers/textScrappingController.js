@@ -16,7 +16,7 @@ exports.textRequest = async (req, res) => {
             console.log(r.data.results[0].textSearch);
           })
           .catch((e) => {
-            console.log(e.response.data.error_message);
+            console.log(e.res.data.error_message);
           });
     } catch (error) {
         console.error(err); // Log any error that occurs
