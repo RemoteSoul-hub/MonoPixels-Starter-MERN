@@ -9,6 +9,10 @@ const placeSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true // Ensure that each place_id is unique in the collection
+  },
+  website:{
+    type: String,
+    required: true
   }
 });
 

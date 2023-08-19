@@ -14,21 +14,25 @@ exports.textRequest = async (req, res) => {
     axios.get(url)
       .then(async (response) => {
         const places = response.data.results;
-
+        Promise.resolve(places);      
         console.log(`Received ${places.length} places from Google Maps API.`);
 
         // Iterate over the results and save each one
         for (const place of places) {
           console.log(`Saving place: ${place.name} (ID: ${place.place_id})`);
-
+          const url_details = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${key}`;
+          axios.get(url_details).then(async response => {
+          const  place_details = response.data.result;
           const newPlace = new Place({
             name: place.name,
-            place_id: place.place_id
-          });
+            place_id: place.place_id,
+            website: place_details.website
 
+          });
+          
           await newPlace.save();
           console.log(`Saved place: ${place.name}`);
-        }
+        })}
 
         console.log("Sending results back to client.");
         res.json(places); // Send results back to the client
