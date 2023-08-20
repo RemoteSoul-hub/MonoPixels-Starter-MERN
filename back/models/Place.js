@@ -13,6 +13,11 @@ const placeSchema = new mongoose.Schema({
   website:{
     type: String,
     required: true
+  },
+  web_email:{
+    type: String,
+    required: true,
+    unique: true
   }
 });
 
